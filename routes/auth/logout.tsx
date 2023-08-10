@@ -1,12 +1,20 @@
-import { Head } from "$fresh/runtime.ts";
+import { Handlers } from "$fresh/server.ts";
+import { deleteCookie } from "$std/http/cookie.ts";
 
-export default function LogOut() {
-  return (
-    <>
-      <Head>
-        <title>deploy-approval</title>
-      </Head>
-      Log out...
-    </>
-  );
-}
+export const handler: Handlers = {
+  GET(req) {
+    const url = new URL(req.url);
+    const returnUrl = url.searchParams.get("returnUrl") ?? "/";
+    const headers = new Headers({
+      Location: returnUrl,
+    });
+    deleteCookie(headers, "state");
+    deleteCookie(headers, "codeVerifier");
+    deleteCookie(headers, "accessToken", { path: "/" });
+    deleteCookie(headers, "refreshToken", { path: "/" });
+    return new Response("", {
+      status: 302,
+      headers,
+    });
+  },
+};
