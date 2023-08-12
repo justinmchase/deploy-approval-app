@@ -13,6 +13,7 @@ export async function handler(
     const [, payload] = accessToken.split(".");
     const token = JSON.parse(atob(payload));
     const { oid, name, email } = token;
+    ctx.state.accessToken = accessToken;
     ctx.state.user = {
       oid,
       name,

@@ -1,7 +1,9 @@
 export interface State {
+  accessToken?: string;
   user?: User;
 }
 export interface AuthenticatedState {
+  accessToken: string;
   user: User;
 }
 

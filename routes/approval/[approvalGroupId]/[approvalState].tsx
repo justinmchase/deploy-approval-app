@@ -12,16 +12,25 @@ import {
   Segment,
   SemanticCOLORS,
 } from "$semantic-ui";
-import { api, ApprovalGroupResponse } from "../../shared/api.ts";
-import { AuthenticatedState } from "../../shared/state.ts";
+import { AuthenticatedState } from "../../../shared/state.ts";
+import {
+  api,
+  ApprovalGroupResponse,
+  ApprovalState,
+} from "../../../shared/api.ts";
 
 export const handler: Handlers<unknown, AuthenticatedState> = {
   async GET(_req, ctx) {
     const { accessToken } = ctx.state;
-    const { approvalGroupId } = ctx.params;
-    const approval = await api.approvalGroup(accessToken, approvalGroupId);
+    const { approvalGroupId, approvalState } = ctx.params;
+    const approval = await api.approval(
+      accessToken,
+      approvalGroupId,
+      approvalState as ApprovalState,
+    );
     return ctx.render({
       approvalGroupId,
+      approvalState,
       approval,
     });
   },
@@ -29,13 +38,17 @@ export const handler: Handlers<unknown, AuthenticatedState> = {
 
 type ApprovalProps = {
   approvalGroupId: string;
+  approvalState: ApprovalState;
   approval: ApprovalGroupResponse;
 };
 
 export default function Approval(
   props: PageProps<ApprovalProps, AuthenticatedState>,
 ) {
-  const { data: { approvalGroupId, approval } } = props;
+  const {
+    state: { user },
+    data: { approvalGroupId, approvalState, approval },
+  } = props;
 
   return (
     <>
@@ -48,11 +61,11 @@ export default function Approval(
           <Card centered fluid>
             <Card.Content>
               <Card.Header>
-                {approval.approvalGroup.name} Approval Requested
+                {approval.approvalGroup.name} Approval Sent
               </Card.Header>
               <Card.Meta>{approval.approvalGroup.id}</Card.Meta>
               <Card.Description>
-                Your approval has been requested for the following
+                Your approval has been sent for the following
                 <Divider horizontal>deployment</Divider>
                 <List divided relaxed>
                   <List.Item>
@@ -107,7 +120,7 @@ export default function Approval(
                         status
                       </List.Header>
                       <List.Description>
-                        {approval.check.state ?? "pending"}
+                        {approval.check.state}
                       </List.Description>
                     </List.Content>
                   </List.Item>
@@ -115,21 +128,23 @@ export default function Approval(
                     <List.Content>
                       <List.Description>
                         {approval.check.results.map((result) => {
-                          const [color, state] = (() => {
+                          const [color, state, count] = (() => {
                             switch (result.state) {
                               case "approved":
-                                return ["green", "Approved"];
+                                return ["green", "Approved", result.count];
                               case "rejected":
-                                return ["red", "Rejected"];
+                                return ["red", "Rejected", result.count];
                               default:
-                                return ["blue", "Pending"];
+                                return ["blue", "Pending", result.count];
                             }
-                          })() as [SemanticCOLORS, string];
+                          })() as [SemanticCOLORS, string, number];
                           return (
-                            <Label color={color} image>
-                              {result.groupName}
-                              <Label.Detail>{state}</Label.Detail>
-                            </Label>
+                            <>
+                              <Label color={color} image>
+                                {result.groupName}
+                                <Label.Detail>{state}</Label.Detail>
+                              </Label>
+                            </>
                           );
                         })}
                       </List.Description>
@@ -139,24 +154,25 @@ export default function Approval(
               </Card.Description>
             </Card.Content>
             <Card.Content extra>
-              <div className="ui two buttons">
-                <Button
-                  basic
-                  color="green"
-                  as="a"
-                  href={`/approval/${approvalGroupId}/approved`}
-                >
-                  Approve
-                </Button>
-                <Button
-                  basic
-                  color="red"
-                  as="a"
-                  href={`/approval/${approvalGroupId}/rejected`}
-                >
-                  Reject
-                </Button>
-              </div>
+              {approvalState === "approved"
+                ? (
+                  <Button
+                    basic
+                    color="green"
+                    disabled
+                  >
+                    Approved
+                  </Button>
+                )
+                : (
+                  <Button
+                    basic
+                    color="red"
+                    disabled
+                  >
+                    Rejected
+                  </Button>
+                )}
             </Card.Content>
           </Card>
           <Message>

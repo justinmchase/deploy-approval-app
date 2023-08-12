@@ -22,7 +22,8 @@
     "twind": "https://esm.sh/twind@0.16.19",
     "twind/": "https://esm.sh/twind@0.16.19/",
     "$std/": "https://deno.land/std@0.193.0/",
-    "$oauth": "https://deno.land/x/oauth2_client@v1.0.2/mod.ts"
+    "$oauth": "https://deno.land/x/oauth2_client@v1.0.2/mod.ts",
+    "$semantic-ui": "https://esm.sh/semantic-ui-react@2.1.4?alias=react:preact/compat,react-dom:preact/compat,@types/react:preact&external=preact/compat"
   },
   "compilerOptions": {
     "jsx": "react-jsx",

@@ -1,6 +1,4 @@
-// routes/_middleware.ts
 import { MiddlewareHandlerContext } from "$fresh/server.ts";
-import { getCookies } from "$std/http/cookie.ts";
 import { State } from "../../shared/state.ts";
 
 export async function handler(

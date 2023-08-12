@@ -33,15 +33,6 @@ export const handler: Handlers = {
         ? { expires: new Date().valueOf() + (tokens.expiresIn * 1000) }
         : {},
     });
-    if (tokens.refreshToken) {
-      setCookie(headers, {
-        name: "refreshToken",
-        value: tokens.refreshToken,
-        ...tokens.expiresIn
-          ? { expires: new Date().valueOf() + (tokens.expiresIn * 1000) }
-          : {},
-      });
-    }
 
     return new Response("", {
       status: 302,
