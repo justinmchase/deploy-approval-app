@@ -5,6 +5,7 @@ import {
   Divider,
   Grid,
   Header,
+  Icon,
   Image,
   Item,
   Label,
@@ -52,11 +53,20 @@ export default function Approval(
               <Card.Header>
                 {approval.approvalGroup.name} Approval Requested
               </Card.Header>
-              <Card.Meta>{approval.approvalGroup.id}</Card.Meta>
+              <Card.Meta>
+                <Icon name="clock" />
+                {new Date(approval.deployment.createdAt).toLocaleString()}
+              </Card.Meta>
               <Card.Description>
                 Your approval has been{" "}
                 {approval.approval ? "recorded" : "requested"} for the following
-                <Divider horizontal>deployment</Divider>
+                <Divider
+                  as="a"
+                  href={`/deployment/${approval.deployment._id}`}
+                  horizontal
+                >
+                  deployment
+                </Divider>
                 <DeploymentItem
                   deployment={approval.deployment}
                   check={approval.check}

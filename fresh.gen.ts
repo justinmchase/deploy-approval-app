@@ -11,7 +11,9 @@ import * as $5 from "./routes/approval/_middleware.tsx";
 import * as $6 from "./routes/auth/code.tsx";
 import * as $7 from "./routes/auth/login.tsx";
 import * as $8 from "./routes/auth/logout.tsx";
-import * as $9 from "./routes/index.tsx";
+import * as $9 from "./routes/deployment/[deploymentId].tsx";
+import * as $10 from "./routes/deployment/_middleware.tsx";
+import * as $11 from "./routes/index.tsx";
 import * as $$0 from "./islands/Auth.tsx";
 import * as $$1 from "./islands/Counter.tsx";
 
@@ -26,7 +28,9 @@ const manifest = {
     "./routes/auth/code.tsx": $6,
     "./routes/auth/login.tsx": $7,
     "./routes/auth/logout.tsx": $8,
-    "./routes/index.tsx": $9,
+    "./routes/deployment/[deploymentId].tsx": $9,
+    "./routes/deployment/_middleware.tsx": $10,
+    "./routes/index.tsx": $11,
   },
   islands: {
     "./islands/Auth.tsx": $$0,

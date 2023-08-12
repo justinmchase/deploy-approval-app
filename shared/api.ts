@@ -34,6 +34,7 @@ export type DeploymentCheck = {
     _id: (string | null)[];
     deploymentId: string;
     approvalGroupId: string;
+    approvalAt: string;
     groupId: string;
     groupName: string;
     state: ApprovalState | null;
@@ -51,15 +52,25 @@ export type Approval = {
   _id: string;
   deploymentId: string;
   approvalGroupId: string;
+  approvalGroupName: string;
   approver: User;
   state: ApprovalState;
   reason?: string;
+  createdAt: string;
+  updatedAt?: string;
 };
 
 export type ApprovalResponse = {
   approval: Approval;
   deployment: Deployment;
   approvalGroup: ApprovalGroup;
+  check: DeploymentCheck;
+};
+
+export type DeploymentResponse = {
+  deployment: Deployment;
+  approvalGroups: ApprovalGroup[];
+  approvals: Approval[];
   check: DeploymentCheck;
 };
 
@@ -93,6 +104,21 @@ export class Api {
       },
     );
     return await res.json() as ApprovalResponse;
+  }
+
+  public async deployment(
+    accessToken: string,
+    deploymentId: string,
+  ) {
+    const res = await fetch(
+      `${config.deployApprovalApi}/deployment/${deploymentId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    );
+    return await res.json() as DeploymentResponse;
   }
 }
 

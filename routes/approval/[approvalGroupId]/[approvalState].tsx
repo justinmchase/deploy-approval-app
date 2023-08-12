@@ -1,25 +1,6 @@
-import { Handlers, PageProps } from "$fresh/server.ts";
-import {
-  Button,
-  Card,
-  Divider,
-  Grid,
-  Header,
-  Image,
-  Label,
-  List,
-  Message,
-  Segment,
-  SemanticCOLORS,
-} from "$semantic-ui";
+import { Handlers } from "$fresh/server.ts";
 import { AuthenticatedState } from "../../../shared/state.ts";
-import {
-  api,
-  ApprovalGroupResponse,
-  ApprovalState,
-} from "../../../shared/api.ts";
-import DeploymentItem from "../../../components/DeploymentItem.tsx";
-import ApprovalButton from "../../../components/ApprovalButton.tsx";
+import { api, ApprovalState } from "../../../shared/api.ts";
 
 export const handler: Handlers<unknown, AuthenticatedState> = {
   async GET(_req, ctx) {

@@ -1,6 +1,7 @@
-import { Button, Image, Item, Label, SemanticCOLORS } from "$semantic-ui";
+import { Button, Icon, Image, Item, Label, SemanticCOLORS } from "$semantic-ui";
 import { ApprovalState } from "../shared/api.ts";
 import { Deployment, DeploymentCheck } from "../shared/api.ts";
+import ApprovalLabel from "./ApprovalLabel.tsx";
 
 type Props = {
   deployment: Deployment;
@@ -12,22 +13,22 @@ export default function DeploymentItem(
 ) {
   const { deployment, check } = props;
 
-  const statusColor = (
-    approvalState?: ApprovalState,
-  ): [SemanticCOLORS, string] => {
-    switch (approvalState) {
-      case "approved":
-        return ["green", "Approved"];
-      case "rejected":
-        return ["red", "Rejected"];
-      default:
-        return ["blue", "Pending"];
-    }
-  };
-
   return (
     <>
       <Item.Group divided>
+        <Item>
+          <Item.Content>
+            <Item.Header>run</Item.Header>
+            <Item.Description>
+              <a
+                href={`https://github.com/${deployment.repository}/actions/runs/${deployment.runId}`}
+              >
+                {deployment.runId}
+              </a>
+            </Item.Description>
+          </Item.Content>
+        </Item>
+
         <Item>
           <Item.Content>
             <Item.Header>repository</Item.Header>
@@ -56,6 +57,7 @@ export default function DeploymentItem(
           <Item.Content>
             <Item.Header>time</Item.Header>
             <Item.Description>
+              <Icon name="clock" />
               {new Date(deployment.createdAt)
                 .toLocaleString()}
             </Item.Description>
@@ -85,37 +87,10 @@ export default function DeploymentItem(
           <Item.Content>
             <Item.Header>status</Item.Header>
             <Item.Description>
-              <Label
-                color={statusColor(deployment.state)[0]}
-              >
-                {statusColor(deployment.state)[1]}
-              </Label>
-            </Item.Description>
-          </Item.Content>
-        </Item>
-
-        <Item>
-          <Item.Content>
-            <Item.Header>approval groups</Item.Header>
-            <Item.Description>
-              {check.results.map((result) => {
-                const [color, state] = (() => {
-                  switch (result.state) {
-                    case "approved":
-                      return ["green", "Approved"];
-                    case "rejected":
-                      return ["red", "Rejected"];
-                    default:
-                      return ["blue", "Pending"];
-                  }
-                })() as [SemanticCOLORS, string];
-                return (
-                  <Label color={color} image>
-                    {result.groupName}
-                    <Label.Detail>{state}</Label.Detail>
-                  </Label>
-                );
-              })}
+              <ApprovalLabel
+                approvalState={deployment.state}
+                approvalAt={deployment.updatedAt}
+              />
             </Item.Description>
           </Item.Content>
         </Item>
