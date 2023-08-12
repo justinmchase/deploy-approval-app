@@ -8,6 +8,7 @@ export type Deployment = {
   installationId: number;
   environment: string;
   ref: string;
+  state?: ApprovalState;
   creator: {
     login: string;
     url: string;
@@ -55,12 +56,6 @@ export type Approval = {
   reason?: string;
 };
 
-export type ApprovalGroupResponse = {
-  deployment: Deployment;
-  approvalGroup: ApprovalGroup;
-  check: DeploymentCheck;
-};
-
 export type ApprovalResponse = {
   approval: Approval;
   deployment: Deployment;
@@ -81,7 +76,7 @@ export class Api {
         },
       },
     );
-    return await res.json() as ApprovalGroupResponse;
+    return await res.json() as ApprovalResponse;
   }
   public async approval(
     accessToken: string,

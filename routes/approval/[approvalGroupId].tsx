@@ -6,13 +6,15 @@ import {
   Grid,
   Header,
   Image,
+  Item,
   Label,
-  List,
   Message,
-  Segment,
   SemanticCOLORS,
 } from "$semantic-ui";
-import { api, ApprovalGroupResponse } from "../../shared/api.ts";
+import ApprovalButton from "../../components/ApprovalButton.tsx";
+import DeploymentItem from "../../components/DeploymentItem.tsx";
+import Auth from "../../islands/Auth.tsx";
+import { api, ApprovalResponse } from "../../shared/api.ts";
 import { AuthenticatedState } from "../../shared/state.ts";
 
 export const handler: Handlers<unknown, AuthenticatedState> = {
@@ -29,14 +31,14 @@ export const handler: Handlers<unknown, AuthenticatedState> = {
 
 type ApprovalProps = {
   approvalGroupId: string;
-  approval: ApprovalGroupResponse;
+  approval: ApprovalResponse;
 };
 
 export default function Approval(
   props: PageProps<ApprovalProps, AuthenticatedState>,
 ) {
-  const { data: { approvalGroupId, approval } } = props;
-
+  const { state: { user, returnUrl }, data: { approvalGroupId, approval } } =
+    props;
   return (
     <>
       <Grid
@@ -52,116 +54,28 @@ export default function Approval(
               </Card.Header>
               <Card.Meta>{approval.approvalGroup.id}</Card.Meta>
               <Card.Description>
-                Your approval has been requested for the following
+                Your approval has been{" "}
+                {approval.approval ? "recorded" : "requested"} for the following
                 <Divider horizontal>deployment</Divider>
-                <List divided relaxed>
-                  <List.Item>
-                    <List.Content>
-                      <List.Header>repository</List.Header>
-                      <List.Description>
-                        {approval.deployment.repository}
-                      </List.Description>
-                    </List.Content>
-                  </List.Item>
-                  <List.Item>
-                    <List.Content>
-                      <List.Header>
-                        environment
-                      </List.Header>
-                      <List.Description as="a">
-                        {approval.deployment.environment}
-                      </List.Description>
-                    </List.Content>
-                  </List.Item>
-                  <List.Item
-                    as="a"
-                    href={`https://github.com/${approval.deployment.creator.login}`}
-                  >
-                    <Image
-                      src={approval.deployment.creator.avatarUrl}
-                      avatar
-                    />
-                    <List.Content>
-                      <List.Header>
-                        creator
-                      </List.Header>
-                      <List.Description>
-                        {approval.deployment.creator.login}
-                      </List.Description>
-                    </List.Content>
-                  </List.Item>
-                  <List.Item>
-                    <List.Content>
-                      <List.Header>
-                        time
-                      </List.Header>
-                      <List.Description>
-                        {new Date(approval.deployment.createdAt)
-                          .toLocaleString()}
-                      </List.Description>
-                    </List.Content>
-                  </List.Item>
-                  <List.Item>
-                    <List.Content>
-                      <List.Header>
-                        status
-                      </List.Header>
-                      <List.Description>
-                        {approval.check.state ?? "pending"}
-                      </List.Description>
-                    </List.Content>
-                  </List.Item>
-                  <List.Item>
-                    <List.Content>
-                      <List.Description>
-                        {approval.check.results.map((result) => {
-                          const [color, state] = (() => {
-                            switch (result.state) {
-                              case "approved":
-                                return ["green", "Approved"];
-                              case "rejected":
-                                return ["red", "Rejected"];
-                              default:
-                                return ["blue", "Pending"];
-                            }
-                          })() as [SemanticCOLORS, string];
-                          return (
-                            <Label color={color} image>
-                              {result.groupName}
-                              <Label.Detail>{state}</Label.Detail>
-                            </Label>
-                          );
-                        })}
-                      </List.Description>
-                    </List.Content>
-                  </List.Item>
-                </List>
+                <DeploymentItem
+                  deployment={approval.deployment}
+                  check={approval.check}
+                />
               </Card.Description>
             </Card.Content>
             <Card.Content extra>
-              <div className="ui two buttons">
-                <Button
-                  basic
-                  color="green"
-                  as="a"
-                  href={`/approval/${approvalGroupId}/approved`}
-                >
-                  Approve
-                </Button>
-                <Button
-                  basic
-                  color="red"
-                  as="a"
-                  href={`/approval/${approvalGroupId}/rejected`}
-                >
-                  Reject
-                </Button>
-              </div>
+              <Item>
+                <Item.Header>Your Approval</Item.Header>
+                <Item.Content>
+                  <ApprovalButton
+                    approvalGroup={approval.approvalGroup}
+                    approval={approval.approval}
+                  />
+                </Item.Content>
+              </Item>
             </Card.Content>
           </Card>
-          <Message>
-            New to us? <a href="#">Sign Up</a>
-          </Message>
+          <Auth user={user} returnUrl={returnUrl} />
         </Grid.Column>
       </Grid>
     </>

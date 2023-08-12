@@ -14,6 +14,7 @@ export async function handler(
     const token = JSON.parse(atob(payload));
     const { oid, name, email } = token;
     ctx.state.accessToken = accessToken;
+    ctx.state.returnUrl = req.url;
     ctx.state.user = {
       oid,
       name,
