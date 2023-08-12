@@ -1,7 +1,5 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
 import { Head } from "$fresh/runtime.ts";
-
-import { useSignal } from "@preact/signals";
 import { User } from "../shared/state.ts";
 import Auth from "../islands/Auth.tsx";
 
@@ -41,6 +39,7 @@ export default function Home(
           <a href="https://github.com/apps/deploy-approval" class="underline">
             Get started now
           </a>
+          <Auth user={user} returnUrl={returnUrl}></Auth>
         </div>
       </div>
     </>
