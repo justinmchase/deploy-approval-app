@@ -1,4 +1,4 @@
-# Fresh project
+# Deploy Approval
 
 This is the front end code for https://deploy-approval.app
 
