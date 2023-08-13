@@ -6,8 +6,9 @@ This is the front end code for https://deploy-approval.app
 
 Make sure to install Deno: https://deno.land/manual/getting_started/installation
 
-Copy the `.env.template` file to `.env` and ask just for the secret needed to
-make auth work locally.
+Copy the `.env.template` file to `.env` and ask
+[justinmchase](mailto:justin.m.chase@gmail.com) for the secret needed to make
+auth work locally.
 
 Then start the project:
 
