@@ -14,7 +14,6 @@ import {
   Table,
   TableCell,
 } from "$semantic-ui";
-import ApprovalButton from "../../components/ApprovalButton.tsx";
 import ApprovalLabel from "../../components/ApprovalLabel.tsx";
 import DeploymentItem from "../../components/DeploymentItem.tsx";
 import Auth from "../../islands/Auth.tsx";
