@@ -1,8 +1,10 @@
 {
   "lock": false,
   "tasks": {
-    "start": "deno run -A --watch=static/,routes/ dev.ts",
-    "update": "deno run -A -r https://fresh.deno.dev/update ."
+    "run": "deno run -A --watch=static/,routes/ dev.ts",
+    "update": "deno run -A -r https://fresh.deno.dev/update .",
+    "build": "deno run -A dev.ts build",
+    "preview": "deno run -A main.ts"
   },
   "lint": {
     "rules": {
@@ -10,23 +12,33 @@
         "fresh",
         "recommended"
       ]
-    }
+    },
+    "exclude": [
+      "_fresh"
+    ]
   },
   "imports": {
-    "$fresh/": "https://deno.land/x/fresh@1.3.1/",
+    "$fresh/": "https://deno.land/x/fresh@1.4.2/",
     "preact": "https://esm.sh/preact@10.15.1",
     "preact/": "https://esm.sh/preact@10.15.1/",
-    "preact-render-to-string": "https://esm.sh/*preact-render-to-string@6.2.0",
+    "preact-render-to-string": "https://esm.sh/*preact-render-to-string@6.2.1",
     "@preact/signals": "https://esm.sh/*@preact/signals@1.1.3",
     "@preact/signals-core": "https://esm.sh/*@preact/signals-core@1.2.3",
-    "twind": "https://esm.sh/twind@0.16.19",
-    "twind/": "https://esm.sh/twind@0.16.19/",
+    "@twind/core": "https://esm.sh/@twind/core@1.1.3",
+    "@twind/preset-tailwind": "https://esm.sh/@twind/preset-tailwind@1.1.4",
+    "@twind/preset-tailwind/": "https://esm.sh/@twind/preset-tailwind@1.1.4/",
+    "@twind/preset-autoprefix": "https://esm.sh/@twind/preset-autoprefix@1.0.7",
+    "@twind/preset-radix-ui/": "https://esm.sh/@twind/preset-radix-ui@1.0.7/",
     "$std/": "https://deno.land/std@0.193.0/",
-    "$oauth": "https://deno.land/x/oauth2_client@v1.0.2/mod.ts",
-    "$semantic-ui": "https://esm.sh/semantic-ui-react@2.1.4?alias=react:preact/compat,react-dom:preact/compat,@types/react:preact/compat&external=preact/compat"
+    "$oauth": "https://deno.land/x/oauth2_client@v1.0.2/mod.ts"
   },
   "compilerOptions": {
     "jsx": "react-jsx",
     "jsxImportSource": "preact"
+  },
+  "fmt": {
+    "exclude": [
+      "_fresh"
+    ]
   }
 }

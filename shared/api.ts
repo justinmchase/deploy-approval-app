@@ -29,7 +29,7 @@ export type ApprovalGroup = {
 };
 
 export type DeploymentCheck = {
-  state: string;
+  state: ApprovalState;
   results: {
     _id: (string | null)[];
     deploymentId: string;
@@ -74,6 +74,23 @@ export type DeploymentResponse = {
   check: DeploymentCheck;
 };
 
+export type ApprovalsResponse = Page<
+  Approval & { approvalGroup: ApprovalGroup } & {
+    deployment: Deployment;
+  }
+>;
+
+export type PageArgs = {
+  offset: number;
+};
+
+export type Page<T> = {
+  offset: number;
+  limit: number;
+  total: number;
+  results: T[];
+};
+
 export class Api {
   public async approvalGroup(
     accessToken: string,
@@ -105,7 +122,6 @@ export class Api {
     );
     return await res.json() as ApprovalResponse;
   }
-
   public async deployment(
     accessToken: string,
     deploymentId: string,
@@ -119,6 +135,21 @@ export class Api {
       },
     );
     return await res.json() as DeploymentResponse;
+  }
+
+  public async approvals(
+    accessToken: string,
+    page: PageArgs,
+  ) {
+    const res = await fetch(
+      `${config.deployApprovalApi}/approvals?offset=${page.offset}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    );
+    return await res.json() as ApprovalsResponse;
   }
 }
 

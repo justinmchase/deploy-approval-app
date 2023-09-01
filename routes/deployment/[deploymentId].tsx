@@ -1,23 +1,10 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
-import {
-  Button,
-  Card,
-  Divider,
-  Grid,
-  Header,
-  Icon,
-  Image,
-  Item,
-  Label,
-  Message,
-  SemanticCOLORS,
-  Table,
-  TableCell,
-} from "$semantic-ui";
-import ApprovalLabel from "../../components/ApprovalLabel.tsx";
-import DeploymentItem from "../../components/DeploymentItem.tsx";
-import Auth from "../../islands/Auth.tsx";
-import { api, ApprovalResponse, DeploymentResponse } from "../../shared/api.ts";
+import ApprovalBadge from "../../components/ApprovalBadge.tsx";
+import Creator from "../../components/Creator.tsx";
+import Deployment from "../../components/Deployment.tsx";
+import Link from "../../components/Link.tsx";
+import Page from "../../components/Page.tsx";
+import { api, DeploymentResponse } from "../../shared/api.ts";
 import { titleCase } from "../../shared/casing.ts";
 import { AuthenticatedState } from "../../shared/state.ts";
 
@@ -32,108 +19,76 @@ export const handler: Handlers<unknown, AuthenticatedState> = {
   },
 };
 
-type ApprovalProps = {
+type Props = {
   deployment: DeploymentResponse;
 };
 
 export default function Approval(
-  props: PageProps<ApprovalProps, AuthenticatedState>,
+  props: PageProps<Props, AuthenticatedState>,
 ) {
   const { state: { user, returnUrl }, data: { deployment } } = props;
   return (
-    <>
-      <Grid
-        textAlign="center"
-        style={{ height: "100vh" }}
-        verticalAlign="middle"
-      >
-        <Grid.Column style={{ maxWidth: 500 }}>
-          <Card centered fluid>
-            <Card.Content>
-              <Card.Header>
-                Deployment
-              </Card.Header>
-              <Card.Meta>
-                <Icon name="clock" />{" "}
-                {new Date(deployment.deployment.createdAt).toLocaleString()}
-              </Card.Meta>
-              <Card.Description>
-                <DeploymentItem
-                  deployment={deployment.deployment}
-                  check={deployment.check}
-                />
-              </Card.Description>
-            </Card.Content>
-            <Card.Content extra>
-              <Table basic="very" celled collapsing>
-                <Table.Header>
-                  <Table.Row>
-                    <Table.HeaderCell>Approval Group</Table.HeaderCell>
-                    <Table.HeaderCell>Status</Table.HeaderCell>
-                  </Table.Row>
-                </Table.Header>
-                <Table.Body>
-                  {deployment.check.results.map((check) => {
-                    return (
-                      <Table.Row>
-                        <Table.Cell>
-                          <Header
-                            as="a"
-                            href={`/approval/${check.approvalGroupId}`}
-                          >
-                            {titleCase(check.groupName)}
-                          </Header>
-                        </Table.Cell>
-                        <Table.Cell>
-                          <ApprovalLabel
-                            approvalState={check.state}
-                            approvalAt={check.approvalAt}
-                          />
-                        </Table.Cell>
-                      </Table.Row>
-                    );
-                  })}
-                </Table.Body>
-              </Table>
-            </Card.Content>
-            <Card.Content extra>
-              <Table basic="very" celled collapsing compact>
-                <Table.Header>
-                  <Table.Row>
-                    <Table.HeaderCell>Approver</Table.HeaderCell>
-                    <Table.HeaderCell>Group</Table.HeaderCell>
-                    <Table.HeaderCell>Status</Table.HeaderCell>
-                  </Table.Row>
-                </Table.Header>
-                <Table.Body>
-                  {deployment.approvals.map((approval) => {
-                    return (
-                      <Table.Row>
-                        <Table.Cell>
-                          <Header as="h5">
-                            {titleCase(approval.approver.name)}
-                          </Header>
-                        </Table.Cell>
-                        <Table.Cell>
-                          {approval.approvalGroupName ?? "unknown group"}
-                        </Table.Cell>
-                        <Table.Cell>
-                          <ApprovalLabel
-                            approvalState={approval.state}
-                            approvalAt={approval.createdAt ??
-                              approval.updatedAt}
-                          />
-                        </Table.Cell>
-                      </Table.Row>
-                    );
-                  })}
-                </Table.Body>
-              </Table>
-            </Card.Content>
-          </Card>
-          <Auth user={user} returnUrl={returnUrl} />
-        </Grid.Column>
-      </Grid>
-    </>
+    <Page user={user} returnUrl={returnUrl}>
+      <div class="flow-root mx-auto max-w-lg">
+        <div class="my-8 flex items-center gap-4 before:h-px before:flex-1 before:bg-gray-300  before:content-[''] after:h-px after:flex-1 after:bg-gray-300  after:content-['']">
+          Deployment
+        </div>
+        <Deployment deployment={deployment.deployment} />
+
+        <div class="my-8 flex items-center gap-4 before:h-px before:flex-1 before:bg-gray-300  before:content-[''] after:h-px after:flex-1 after:bg-gray-300  after:content-['']">
+          Approval Groups
+        </div>
+
+        <div class="mx-auto max-w-lg">
+          <ul class="divide-y divide-gray-200 rounded-xl border border-gray-200 shadow-sm">
+            {deployment.check.results.map((result) => {
+              return (
+                <li class="p-4">
+                  <h4 class="text-lg font-medium leading-loose">
+                    {result.groupName}{" "}
+                    <ApprovalBadge
+                      state={result.state || undefined}
+                      count={result.count}
+                    />
+                  </h4>
+
+                  <p class="text-gray-500">
+                    {new Date(result.approvalAt).toLocaleDateString()}
+                  </p>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+
+        <div class="my-8 flex items-center gap-4 before:h-px before:flex-1 before:bg-gray-300  before:content-[''] after:h-px after:flex-1 after:bg-gray-300  after:content-['']">
+          Approvals
+        </div>
+
+        <div class="mx-auto max-w-lg">
+          <ul class="divide-y divide-gray-200 rounded-xl border border-gray-200 shadow-sm">
+            {deployment.approvals.map((approval) => {
+              return (
+                <li class="p-4">
+                  <h4 class="text-lg font-medium leading-loose">
+                    <Link
+                      text={titleCase(approval.approver.name)}
+                      href={`mailto:${approval.approver.email}`}
+                    />{" "}
+                    <ApprovalBadge state={approval.state} />
+                  </h4>
+                  <p class="text-gray-700">
+                    {approval.approvalGroupName}
+                  </p>
+                  <p class="text-gray-500">
+                    {new Date(approval.createdAt).toLocaleDateString()}
+                  </p>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </div>
+    </Page>
   );
 }

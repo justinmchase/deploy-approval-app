@@ -5,13 +5,11 @@ export default function App({ Component }: AppProps) {
   return (
     <>
       <Head>
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/semantic-ui@2/dist/semantic.min.css"
-        >
-        </link>
+        <title>Deploy Approval</title>
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
-      <Component />
+      <Component data-theme="cupcake" />
     </>
   );
 }

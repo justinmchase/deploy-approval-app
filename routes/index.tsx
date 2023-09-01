@@ -1,7 +1,6 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
-import { Head } from "$fresh/runtime.ts";
 import { User } from "../shared/state.ts";
-import Auth from "../islands/Auth.tsx";
+import Top from "../components/Top.tsx";
 
 export type Data = {
   user?: User;
@@ -20,28 +19,45 @@ export default function Home(
 ) {
   return (
     <>
-      <Head>
-        <title>Deploy Approval App</title>
-      </Head>
-      <div class="px-4 py-8 mx-auto bg-[#86efac]">
-        <div class="max-w-screen-md mx-auto flex flex-col items-center justify-center">
-          <img
-            class="my-6"
-            src="/logo.png"
-            width="128"
-            height="128"
-            alt="the fresh logo: a sliced lemon dripping with juice"
-          />
-          <h1 class="text-4xl font-bold">Deploy Approval App</h1>
-          <p class="my-4">
-            Configurable deployment approval processes for the entire team.
-          </p>
-          <a href="https://github.com/apps/deploy-approval" class="underline">
-            Get started now
-          </a>
-          <Auth user={user} returnUrl={returnUrl}></Auth>
+      <Top user={user} returnUrl={returnUrl} />
+      <section class="bg-gray-50">
+        <div class="mx-auto max-w-screen-xl px-4 py-32 lg:flex lg:h-screen lg:items-center">
+          <div class="mx-auto max-w-xl text-center">
+            <div class="mt-8 flex flex-wrap justify-center gap-4">
+              <img
+                alt="Deploy Approval"
+                src="logo.png"
+                class="h-64 w-64 center object-cover"
+              />
+              <div class="mx-auto max-w-xl text-center">
+                <h1 class="text-3xl text-green-400 font-extrabold sm:text-5xl">
+                  Deploy Approval
+                </h1>
+
+                <p class="mt-4 sm:text-xl/relaxed">
+                  Easy, configurable approvals for Github Deployments.
+                </p>
+              </div>
+            </div>
+
+            <div class="mt-8 flex flex-wrap justify-center gap-4">
+              <a
+                class="block w-full rounded bg-green-400 px-12 py-3 text-sm font-medium text-white shadow hover:bg-green-500 focus:outline-none focus:ring active:bg-green-600 sm:w-auto"
+                href="https://github.com/apps/deploy-approval"
+              >
+                Install
+              </a>
+
+              <a
+                class="block w-full rounded px-12 py-3 text-sm font-medium text-red-400 shadow hover:text-red-500 focus:outline-none focus:ring active:text-red-300 sm:w-auto"
+                href="/about"
+              >
+                Learn More
+              </a>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
     </>
   );
 }
