@@ -45,7 +45,7 @@ export default function About(props: PageProps<unknown, AuthenticatedState>) {
               For details on how to setup, use and configure Deploy Approval,
               please see the{" "}
               <Link
-                href="https://github.com/justinmchase/deploy-approval-api/docs/install.md"
+                href="https://github.com/justinmchase/deploy-approval-api/blob/main/docs/install.md#deploy-approval-installation"
                 text="documentation"
               />.
             </p>
