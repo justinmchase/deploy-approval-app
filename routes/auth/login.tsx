@@ -1,5 +1,6 @@
 import { Handlers } from "$fresh/server.ts";
 import { setCookie } from "$std/http/cookie.ts";
+import { config } from "../../shared/config.ts";
 import { oauth } from "../../shared/oauth.ts";
 
 export const handler: Handlers = {
@@ -9,6 +10,8 @@ export const handler: Handlers = {
     const state = btoa(JSON.stringify({ returnUrl }));
     const redirectUri = await oauth.code.getAuthorizationUri({ state });
     const { codeVerifier, uri } = redirectUri;
+    uri.searchParams.set("p", config.azureB2CWorkflow);
+    uri.searchParams.set("prompt", "login");
     const location = uri.toString();
 
     const headers = new Headers({ Location: location });
